@@ -1,5 +1,4 @@
 const path = require('path');
-const webpack = require('webpack');
 const merge = require('webpack-merge');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -14,25 +13,28 @@ const paths = {
   template: path.resolve('src/index.html'),
 };
 
-
 const commonConfig = merge([
   {
     target: 'web',
     context: paths.base,
     entry: {
-      app: [
-        require.resolve('@babel/polyfill'),
-        paths.app,
-      ],
+      app: paths.app,
     },
     output: {
-      filename: '[name].[chunkhash].js',
-      chunkFilename: '[name].[chunkhash].js',
+      filename: '[name].bundle.js',
       publicPath: '/',
       path: paths.dist,
     },
     resolve: {
       extensions: ['.js', '.jsx'],
+    },
+    modules: {
+      rules: [
+        {
+          test: /\.txt$/,
+          use: 'raw-loader',
+        },
+      ],
     },
     plugins: [
       new HtmlWebpackPlugin({
@@ -53,12 +55,6 @@ const commonConfig = merge([
         '@babel/react',
         '@babel/stage-0',
       ],
-      plugins: ['syntax-dynamic-import'],
-    },
-  }),
-  parts.loadFonts({
-    options: {
-      name: '[name].[hash].[ext]',
     },
   }),
 ]);
@@ -67,55 +63,13 @@ const commonConfig = merge([
 const developmentConfig = merge([
   parts.sourceMaps('cheap-module-source-map'),
   parts.devServer({ host: process.env.HOST, port: process.env.PORT }),
-
-  parts.loadStyles(),
-  parts.loadImages({
-    limit: 8192,
-    name: '[name].[hash].[ext]',
-  }),
-
   parts.envVar('development'),
-
-  { plugins: [new webpack.NamedModulesPlugin()] },
 ]);
 
 const productionConfig = merge([
   parts.sourceMaps('source-map'),
   parts.cleanup([paths.dist]),
   parts.envVar('production'),
-
-  parts.minifyJavaScript(),
-
-  parts.loadOptimizedImages({
-    name: '[name].[hash].[ext]',
-  }),
-  parts.extractChunks([
-    {
-      name: 'common',
-      chunks: ['app'],
-      minChunks: parts.isVendor,
-    },
-    {
-      children: true,
-      minChunks: 3,
-    },
-    {
-      async: true,
-      children: true,
-    },
-    {
-      name: 'manifest',
-      minChunks: Infinity,
-    },
-  ]),
-  parts.scopeHoisting(),
-  parts.extractCSS({
-    filename: '[name].[contenthash].css',
-    use: [
-      parts.cssLoader({ modules: true }),
-    ],
-  }),
-  parts.attachRevision(),
 ]);
 
 module.exports = (env) => {
