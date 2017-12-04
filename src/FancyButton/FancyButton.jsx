@@ -21,4 +21,10 @@ FancyButton.propTypes = {
   onClick: PropTypes.func,
 };
 
+FancyButton.defaultProps = {
+  className: '',
+  children: null,
+  onClick: null,
+};
+
 export default FancyButton;

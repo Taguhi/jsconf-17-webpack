@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import FancyButton from '../FancyButton';
+import withLoadable from '../withLoadable';
 import styles from './Counter.css';
 
+
+const CounterIcon = withLoadable(() => import(/* webpackChunkName: "counter-icon" */ '../CounterIcon'));
 
 class Counter extends Component {
   constructor(props) {
@@ -28,13 +31,15 @@ class Counter extends Component {
 
   render() {
     return (
-        <div className={styles.container}>
+      <div className={styles.container}>
         <div className={styles.counter}>
+          <CounterIcon />
+          &nbsp;
           {this.state.current}
         </div>
         <FancyButton className={styles.button} onClick={this.reset}>Reset</FancyButton>
       </div>
-    )
+    );
   }
 }
 

@@ -61,3 +61,5 @@ typings/
 dist/
 
 !dist/index.html
+
+stats.json

@@ -1,16 +1,14 @@
 const path = require('path');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   context: __dirname,
-  entry: path.join(__dirname, './a.js'),
+  entry: path.join(__dirname, './index.js'),
   output: {
     path: path.join(__dirname, './dist'),
     filename: 'bundle.js'
   },
-  module: {
-    loaders: [{
-      test: /\.png$/,
-      loader: 'file-loader',
-    }],
-  },
+  plugins: [
+    // new UglifyJsPlugin(),
+  ]
 };
